@@ -11,6 +11,7 @@ import counter.FileSystemTools as FST
 
 class VoteCounter(object):
     def __init__(self, electionObject):
+        self.resultsFileName = "%s %s Results.xlsx" % (FST.getTimestampForMakingFileName(), electionObject.officeName)
         self.electionObject = electionObject
         self.candidates = electionObject.candidateNames
         self.maxValid = electionObject.maxValid
@@ -18,6 +19,7 @@ class VoteCounter(object):
         self._initialize_results_dict()
 
     def _initialize_results_dict(self):
+        """Makes each candidate a key in the resultsDict with an initial total of 0"""
         for candidate in self.candidates:
             self.resultsDict[candidate] = 0
 
@@ -57,9 +59,9 @@ class VoteCounter(object):
         raise EX.OverSelectionError(self.maxValid, resultList)
 
     def _handle_count_complete(self, outputFilePath):
-        resultsFileName = '%s/%s %s Results.xlsx' % (outputFilePath, FST.getTimestampForMakingFileName(), self.electionObject.officeName)
-        DataFrame(self.resultsDict, index=['totalVotes']).T.to_excel(resultsFileName)
-        print(self.resultsDict)
+        """Writes results to file"""
+        resultsFile = '%s/%s' % (outputFilePath, self.resultsFileName)
+        DataFrame(self.resultsDict, index=['totalVotes']).T.to_excel(resultsFile)
 
 
 if __name__ == '__main__':

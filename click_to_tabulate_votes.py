@@ -3,10 +3,7 @@ Created by adam on 2/23/18
 """
 __author__ = 'adam'
 import os
-
-
 from counter import FileSystemTools
-from counter import DataObjects
 from counter import Processors
 
 # Where the processor should look to find the files to proces
@@ -33,6 +30,7 @@ data = FileSystemTools.load_results_into_frame(DATA_FILES_PATH)
 # That is useful because the log file will refer to these row ids
 FileSystemTools.add_rowIds(data, LOG_FOLDER_PATH)
 
+# Okay. We're now ready to get started.
 # First, we load a list of election definitions
 elections = []
 # Walk the folder containing the election definition files and

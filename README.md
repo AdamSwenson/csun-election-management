@@ -1,12 +1,30 @@
 # Tools for administering CSUN's faculty elections
 
-## Setup instructions
-Create a folder named ....
+# Setup instructions
+Download this entire folder and place it somewhere convenient. 
+The csun-election-management folder contains both the program files
+and empty folders just waiting for fresh files from the election.
+
+# Tabulating votes
+0 Delete any pre-exising election definition and input files. You may leave preexisting logs and results files, if you like.
+
+1 Create an election definition file for each office that needs to be tabulated.
+
+2 Place the file downloaded from canvas in the appropriate folder.
+
+3 Click the file named click_to_tabulate.py
+
+4 Check the results file for the vote tallies
+
+5 Check the log files for errors
+
+
 
 # Inputs
 
 ## Election definition files
-Location: Input/Election-definitions
+Location: csun-election-management/Input/Election-definitions
+
 Purpose: Each election needs to have an election definition file. The program will read the values from this file and process the appropriate column in the voting results accordingly
 
 Format: These should follow the format in Input/election-definition-template.xlsx
@@ -41,11 +59,15 @@ These are the results which we are going to process. There should be only one fi
 
 
 # Outputs
+Location: csun-election-management/Output/
+
 The program will produce a file in the Output folder
 Name : 
 
 
 # Log files
+Location: csun-election-management/Logs/
+
 Two kinds of log files will be produced. 
 One is an excel file which is just a copy of the initial input file, but
 with row id numbers inserted. This will be helpful for auditing because
