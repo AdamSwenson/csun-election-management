@@ -1,2 +1,0 @@
-****************** 2018-02-23_17-48 ************ 
-2 rows have been loaded from /Users/adam/Dropbox/csun-election-management/Input/.gitignoreEach row has been given an id. The modified sheet has been saved to 2018-02-23_17-48 results_with_row_ids_added.csv

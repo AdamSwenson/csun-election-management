@@ -33,13 +33,15 @@ data = FileSystemTools.load_results_into_frame(DATA_FILES_PATH)
 # That is useful because the log file will refer to these row ids
 FileSystemTools.add_rowIds(data, LOG_FOLDER_PATH)
 
-# load the election definitions
+# First, we load a list of election definitions
 elections = []
+# Walk the folder containing the election definition files and
+# compile a list of filenames
 fileList = FileSystemTools.makeDataFileList(ELECTION_DEF_FILES_PATH)
 for f in fileList:
-    # The elections list will now be populated with DataObject.OfficeElection objects
     elections.append(FileSystemTools.make_election_obj_from_file(f))
 
+# The elections list is now populated with DataObject.OfficeElection objects
 print('%s elections have been loaded' % len(elections))
 
 # Now that we're ready to go, we perform the counts
