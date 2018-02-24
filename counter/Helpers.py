@@ -24,8 +24,8 @@ class Validators(object):
 
     def is_in_candidate_list(self, candidate):
         if not self.is_validator_ready():
-            msg = "Candidate list is empty. Cannot validate the candidate %s" % candiate
-            #todo replace with logger
+            msg = "Candidate list is empty. Cannot validate the candidate %s" % candidate
+            # todo replace with logger
             print(msg)
             return False
 

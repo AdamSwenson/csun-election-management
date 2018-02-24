@@ -2,10 +2,23 @@
 Created by adam on 2/5/18
 """
 __author__ = 'adam'
-
+import os
 # from logbook import Logger
+# from click_to_tabulate_votes import LOG_FOLDER_PATH
 
-from counter.environment import *
+import datetime
+
+
+def getTimestampString():
+    """Returns the standard string format of timestamp used in making a file name"""
+    # return datetime.date.isoformat(datetime.now())
+    return datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
+
+
+def makeLogFilePath():
+    LOG_FOLDER_PATH = "%s/Logs/" % os.getcwd()
+    # return "%s/%s processing-log.txt" % ('/Logs',  getTimestampString())
+    return "%s/%s processing-log.txt" % (LOG_FOLDER_PATH,  getTimestampString())
 
 
 class LogWriter(object):
@@ -14,28 +27,30 @@ class LogWriter(object):
     """
 
     def __init__(self):
-        self.logfile = LOG_FILE_PATH
+        self.logfile = makeLogFilePath()
 
     def write(self, stuff):
         with open(self.logfile, 'a') as f:
+            # print(stuff)
             f.write(stuff)
             f.close()
 
 
-class LogHandler(object):
+class ProcessingEventLogger(LogWriter):
     def __init__(self):
-        self.log_folder_path = ''
+        super().__init__()
 
     def _log(self, message):
-        print(message)
+        self.write(message)
 
     def log_processing_start(self, filePath, numberRows):
+        self._log("****************** %s ************ \n" % getTimestampString())
         msg = "%s rows have been loaded from %s" % (numberRows, filePath)
         self._log(msg)
 
-    def log_invalid_record(self, message):
-        self._log(message)
+    def log_processing_stop(self, filePath, numberRows):
+        msg = "%s rows have been processed from %s" % (numberRows, filePath)
+        self._log(msg)
 
 
-if __name__ == '__main__':
-    pass
+

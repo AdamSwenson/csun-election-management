@@ -3,12 +3,12 @@ Created by adam on 2/5/18
 """
 __author__ = 'adam'
 
-from counter.Loggers import LogWriter
+from counter import Loggers
 
 
 class Errors(Exception):
     def __init__(self):
-        self.logger = LogWriter()
+        self.logger = Loggers.LogWriter()
 
     def logError(self):
         raise NotImplementedError
@@ -22,7 +22,7 @@ class VoterErrors(Errors):
 
     def __init__(self):
         super().__init__()
-        self.logger = LogWriter()
+        self.logger = Loggers.LogWriter()
 
     def logError(self):
         msg = "[%s] %s" % (self.errorTypeString, self.messageContent)

@@ -2,10 +2,11 @@
 Created by adam on 2/5/18
 """
 __author__ = 'adam'
-
-from DataObjects import OfficeElection
-from Helpers import *
-from Exceptions import *
+from pandas import DataFrame
+import counter.DataObjects as DO
+import counter.Exceptions as EX
+import counter.Helpers as HLP
+import counter.FileSystemTools as FST
 
 
 class VoteCounter(object):
@@ -25,22 +26,22 @@ class VoteCounter(object):
         # todo add test for validity
         self.resultsDict[candidateName] += 1
 
-    def count(self, frame):
+    def count(self, frame, outputFilePath):
         columnName = self.electionObject.fieldName
         for row in frame[columnName]:
             try:
                 # Separate into a list of candidates the voter has chosen
-                listOfSelectedNames = ResultFieldProcessor.process_field_values(row)
+                listOfSelectedNames = HLP.ResultFieldProcessor.process_field_values(row)
                 # todo check if number of selected is wrong
                 if self._is_list_valid(listOfSelectedNames):
                     # Update the tallys for the selected candidates
                     [self._process_selected_candidate(name) for name in listOfSelectedNames]
                 else:
                     self._handle_overselection(listOfSelectedNames)
-            except VoterErrors:
+            except EX.VoterErrors:
                 pass
 
-        self._handle_count_complete()
+        self._handle_count_complete(outputFilePath)
 
     def getResults(self):
         return self.resultsDict
@@ -53,26 +54,13 @@ class VoteCounter(object):
         # increment the invalid list
         self.resultsDict['invalid'] += 1
         # logs
-        raise OverSelectionError(self.maxValid, resultList)
+        raise EX.OverSelectionError(self.maxValid, resultList)
 
-    def _handle_count_complete(self):
+    def _handle_count_complete(self, outputFilePath):
+        resultsFileName = '%s/%s %s Results.xlsx' % (outputFilePath, FST.getTimestampForMakingFileName(), self.electionObject.officeName)
+        DataFrame(self.resultsDict, index=['totalVotes']).T.to_excel(resultsFileName)
         print(self.resultsDict)
 
 
-def test_VoteCounter_initialization():
-    testNames = ['smith, john (folks)', 'jip, receive (nosing)']
-    maxValid = 2
-    election = OfficeElection('office1', 'field name', testNames, maxValid)
-
-    vc = VoteCounter(election)
-    # Check that the counter for invalid results is set to 0
-    assert (vc.resultsDict['invalid'] is 0)
-    # Check that all of the test names have been added
-    # and that they have the count of 0
-    for name in testNames:
-        assert (vc.resultsDict[name] is 0)
-
-
-test_VoteCounter_initialization()
 if __name__ == '__main__':
     pass
