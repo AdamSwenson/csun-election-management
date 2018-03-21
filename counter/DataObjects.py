@@ -3,14 +3,14 @@ Created by adam on 2/5/18
 """
 __author__ = 'adam'
 
-from collections import namedtuple
+# from collections import namedtuple
 # OfficeElection = namedtuple('OfficeElection', ['officeName', 'fieldName', 'candidateNames', 'maxValid'])
 
 
 class OfficeElection(object):
     """
     This defines the properties of a contest for a single office.
-    The typical faculty election cycle could be defined as a list of several of these objects
+    The typical faculty election cycle is defined as a list of several of these objects
     """
 
     def __init__(self, officeName, fieldName, candidateNames, maxValid):

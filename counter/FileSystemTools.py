@@ -21,25 +21,6 @@ FILE_W_ROW_IDS_NAME_BASE = "canvas_file_with_row_ids_added.xlsx"
 RESULTS_NAME_BASE = "Vote Tallies.xlsx"
 
 
-def getTimestampForMakingFileName():
-    """Returns the standard string format of timestamp used in making a file name"""
-    # return datetime.date.isoformat(datetime.now())
-    return datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
-
-
-def make_results_file_path(outputFilePath, officeName):
-    return '%s/%s %s %s' % (outputFilePath, getTimestampForMakingFileName(), officeName, RESULTS_NAME_BASE)
-
-# def getSystemRoot():
-#     """
-#     Returns the base directory path.
-#     On a Mac this is usually something like: 'Users/adam/'
-
-#     :rtype: string
-#     """
-#     return os.getenv("HOME")
-
-
 def add_rowIds(frame, outputFilePath=False):
     """Gives each row a unique id.
     Ids begin at 0
@@ -55,16 +36,20 @@ def add_rowIds(frame, outputFilePath=False):
         logger.write("Each row has been given an id. The modified sheet has been saved to %s" % name)
 
 
-def make_election_obj_from_file(fileName):
-    """Reads an excel file definining an election and returns an OfficeElection object"""
-    d = pd.read_excel(fileName)
-    o = {
-        'office': d['Office'][0],
-        'canvas': d['Canvas column name'][0],
-        'max': d['Maximum selections allowed'][0],
-        'candidates': d['Candidate names'].tolist()
-    }
-    return DataObjects.OfficeElection(o['office'], o['canvas'], o['candidates'], o['max'])
+def getSystemRoot():
+    """
+    Returns the base directory path.
+    On a Mac this is usually something like: 'Users/adam/'
+
+    :rtype: string
+    """
+    return os.getenv("HOME")
+
+
+def getTimestampForMakingFileName():
+    """Returns the standard string format of timestamp used in making a file name"""
+    # return datetime.date.isoformat(datetime.now())
+    return datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 
 
 def load_results_into_frame(resultsFolderPath):
@@ -76,6 +61,22 @@ def load_results_into_frame(resultsFolderPath):
     dt = pd.read_csv(fileList[0])
     logger.log_processing_start(fileList[0], len(dt))
     return dt
+
+
+def make_results_file_path(outputFilePath, officeName):
+    return '%s/%s %s %s' % (outputFilePath, getTimestampForMakingFileName(), officeName, RESULTS_NAME_BASE)
+
+
+def make_election_obj_from_file(fileName):
+    """Reads an excel file definining an election and returns an OfficeElection object"""
+    d = pd.read_excel(fileName)
+    o = {
+        'office': d['Office'][0],
+        'canvas': d['Canvas column name'][0],
+        'max': d['Maximum selections allowed'][0],
+        'candidates': d['Candidate names'].tolist()
+    }
+    return DataObjects.OfficeElection(o['office'], o['canvas'], o['candidates'], o['max'])
 
 
 def makeDataFileList(folderPath, exclude=[]):
@@ -112,6 +113,3 @@ def makeDataFileIterator(folderPath, exclude=[]):
             if name not in exclude:
                 yield os.path.join(root, name)
 
-#
-# if __name__ == '__main__':
-#     pass
