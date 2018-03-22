@@ -63,3 +63,6 @@ for election in elections:
     # vote counter object. That's important, fyi
     vc1 = Processors.VoteCounter(election)
     vc1.count(data, OUTPUT_FOLDER_PATH)
+
+
+print("Counting complete!")

@@ -10,8 +10,8 @@ class Errors(Exception):
     def __init__(self):
         self.logger = Loggers.LogWriter()
 
-    def logError(self):
-        raise NotImplementedError
+    # def logError(self):
+    #     raise NotImplementedError
 
 
 class VoterErrors(Errors):
@@ -19,15 +19,28 @@ class VoterErrors(Errors):
     Error objects which are raised when the Voter has done something
     which prevents her vote from being counted
     """
+    #
+    def __init__(self):
+        super().__init__()
+
+
+class OverselectionError(VoterErrors):
+    """Raised when the voter selected more candidates than they were allowed"""
+
+    def __init__(self, maxValid, numberSelected):
+        super().__init__()
+        self.type = "illegal-overselection"
+        self.message = "The was allowed to select %s; they selected %s" % (maxValid, numberSelected)
+
+
+class AbstentionError(VoterErrors):
+    """Called when the voter cast no vote"""
 
     def __init__(self):
         super().__init__()
-        self.logger = Loggers.VoterErrorLogger()
+        self.type = 'Abstention'
+        self.message = "The voter abstained"
 
-    def logError(self):
-        self.logger.log(self.officeName, self.errorTypeString, self.rowId, self.messageContent)
-        # msg = "[%s] %s" % (self.errorTypeString, self.messageContent)
-        # self.logger.write(msg)
 
 
 class ProcessUserErrors(Errors):
@@ -43,28 +56,6 @@ class ProcessUserErrors(Errors):
         msg = "[%s] %s" % (self.errorTypeString, self.messageContent)
         self.logger.write(msg)
 
-
-class OverSelectionError(VoterErrors):
-    """Raised when the voter has selected more than the
-    allowed number of candidates"""
-
-    def __init__(self, maxValid, resultList, officeName, rowId):
-        """
-        Writes error to log. Does nothing else.
-        :param maxValid: Integer of the maximum candidates one could vote for
-        :param resultList: List of candidates voted for
-        """
-        self.errorTypeString = "ERROR: Overselection"
-
-        super().__init__()
-        self.officeName = officeName
-        self.rowId = rowId
-        self.messageContent = "The voter was allowed to select %s names; they selected %s names: \n %s " % (
-            maxValid, len(resultList), resultList)
-        self.logError()
-
-    def __repr__(self):
-        return "%s" % self.message
 
 
 class InvalidCandidateName(VoterErrors):

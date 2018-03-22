@@ -3,6 +3,7 @@ Created by adam on 2/5/18
 """
 __author__ = 'adam'
 
+
 class ResultFieldProcessor(object):
     """
     Handles transformations of the result into a format which
@@ -11,7 +12,8 @@ class ResultFieldProcessor(object):
     @staticmethod
     def process_field_values(field):
         """ Splits the fields on comma; trims"""
-        return field.split(',')
+        if isinstance(field, str):
+            return field.split(',')
 
 
 class Validators(object):
