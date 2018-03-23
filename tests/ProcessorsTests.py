@@ -48,11 +48,11 @@ class VoteCounter(unittest.TestCase):
     def test_initializes_properly(self):
         vc = P.VoteCounter(self.election)
         # Check that the counter for invalid results is set to 0
-        self.assertEqual(vc.resultsDict['invalid'], 0)
+        self.assertEqual(vc.processingDict['invalid'], 0)
         # Check that all of the test names have been added
         # and that they have the count of 0
         for name in self.candidates:
-            self.assertEqual(vc.resultsDict[name], 0)
+            self.assertEqual(vc.processingDict[name], 0)
 
     def test_initialize_without_defined_candidates(self):
         # prep
@@ -61,8 +61,8 @@ class VoteCounter(unittest.TestCase):
         vc = P.VoteCounter(election)
 
         # check
-        self.assertEqual(vc.resultsDict['invalid'], 0, "invalid initialized properly")
-        self.assertEqual(len(vc.resultsDict.keys()), 1, 'no names in results dict')
+        self.assertEqual(vc.processingDict['invalid'], 0, "invalid initialized properly")
+        self.assertEqual(len(vc.processingDict.keys()), 1, 'no names in results dict')
 
     def test_one_candidate_gets_every_vote(self):
         """
@@ -87,7 +87,7 @@ class VoteCounter(unittest.TestCase):
 
         # check
         for k in expected.keys():
-            self.assertEqual(vc.resultsDict[k], expected[k], " values are equal for %s" % k)
+            self.assertEqual(vc.processingDict[k], expected[k], " values are equal for %s" % k)
 
     def test_each_candidate_gets_one_vote(self):
         """
@@ -111,7 +111,7 @@ class VoteCounter(unittest.TestCase):
 
         # check
         for k in expected.keys():
-            self.assertEqual(vc.resultsDict[k], expected[k], " values are equal for %s" % k)
+            self.assertEqual(vc.processingDict[k], expected[k], " values are equal for %s" % k)
 
     def test_all_vote_for_all_candidates(self):
         """
@@ -133,7 +133,7 @@ class VoteCounter(unittest.TestCase):
 
         # check
         for k in expected.keys():
-            self.assertEqual(vc.resultsDict[k], expected[k], " values are equal for %s" % k)
+            self.assertEqual(vc.processingDict[k], expected[k], " values are equal for %s" % k)
 
     def test_candidate_wins_by_one_vote(self):
         """
@@ -165,7 +165,7 @@ class VoteCounter(unittest.TestCase):
 
         # check
         for k in expected.keys():
-            self.assertEqual(vc.resultsDict[k], expected[k], " values are equal for %s" % k)
+            self.assertEqual(vc.processingDict[k], expected[k], " values are equal for %s" % k)
 
     def test_overselection_all_vote_for_too_many_candidates(self):
         """
@@ -187,7 +187,7 @@ class VoteCounter(unittest.TestCase):
 
         # check
         for k in expected.keys():
-            self.assertEqual(vc.resultsDict[k], expected[k], " values are equal for %s" % k)
+            self.assertEqual(vc.processingDict[k], expected[k], " values are equal for %s" % k)
 
     def test_invalid_name_selection(self):
         pass

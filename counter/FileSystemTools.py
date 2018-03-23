@@ -58,9 +58,13 @@ def load_results_into_frame(resultsFolderPath):
     """
     logger = Loggers.ProcessingEventLogger()
     fileList = makeDataFileList(resultsFolderPath)
-    dt = pd.read_csv(fileList[0])
-    logger.log_processing_start(fileList[0], len(dt))
-    return dt
+    return pd.read_csv(fileList[0])
+    # frames = []
+    # for f in fileList:
+    #     dt = pd.read_csv(f)
+        # logger.log_processing_start(fileList[0], len(dt))
+        # frames.append(dt)
+    # return pd.concat(frames)
 
 
 def make_results_file_path(outputFilePath, officeName):

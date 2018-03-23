@@ -128,28 +128,33 @@ class VoteCounter(object):
             # The error will handle logging to file
             raise EX.OverselectionError(self.maxValid, len(resultList))
 
-    def _compute_total_legal_votes(self):
-        """All votes which indicate a preference are legal"""
-        return sum(self.resultsDict.values()) - self.resultsDict['abstentions']
+    def _compute_vote_totals(self):
+        """Adds vote totals to the results dictionary
+        All votes which indicate a preference are legal"""
+        self.resultsDict['totalVotesCast'] = sum(self.resultsDict.values()) - self.resultsDict['writeins-unverified']
+        self.resultsDict['totalLegalVotes'] = self.resultsDict['totalVotesCast'] - self.resultsDict['abstentions']
+
 
     def _handle_count_complete(self, outputFilePath):
         """Any tasks to be handled once the counting is done
         should go here. These should include writing results to file
         """
-        self.resultsDict['totalVotesCast'] = sum(self.resultsDict.values())
-        self.resultsDict['totalLegalVotes'] = self._compute_total_legal_votes()
+        if self.electionObject.maxValid == 1:
+            # add total of votes cast fields
+            # these are only required for officer positions
+            # since they must get more than 50% of the legal vote
+            self._compute_vote_totals()
+
         df = DataFrame(self.resultsDict, index=['votes']).T
-        # add a percent of legal votes field
-        df['% legal votes'] = df.apply(lambda x: x / x.totalLegalVotes)
         df.sort_values(by='votes', ascending=False, inplace=True)
 
         if self.electionObject.maxValid == 1:
-            # remove a total of votes cast fields
-            # these are only required for officer positions
-            # since they must get more than 50% of the legal vote
-            # todo Refactor so that don't have to do in this dumb order
-            df.drop(['totalLegalVotes', 'totalVotesCast'], axis=0, inplace=True)
-            df.drop(['% legal votes'], axis=1, inplace=True)
+            # add a percent of legal votes field
+            # again only required for single person elections
+            df['% legal votes'] = df.apply(lambda x: x / x.totalLegalVotes)
+            # # todo Refactor so that don't have to do in this dumb order
+            # df.drop(['totalLegalVotes', 'totalVotesCast'], axis=0, inplace=True)
+            # df.drop(['% legal votes'], axis=1, inplace=True)
 
         if outputFilePath:
             resultsFile = '%s/%s' % (outputFilePath, self.resultsFileName)
