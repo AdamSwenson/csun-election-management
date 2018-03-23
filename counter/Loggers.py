@@ -49,8 +49,14 @@ class VoterErrorLogger(LogWriter):
         """Creates text to be written in a standardized format"""
         return "\n [ %s ] [ %s ] [row # %s] %s  %s \n" % (officeName,  eventType, rowId, getTimestampString(), message)
 
-    def log(self, officeName, eventType, rowId, message):
-        """Actually writes the entry to the file"""
+    def log(self, officeName: str, eventType: str, rowId: int, message:str):
+        """Actually writes the entry to the file
+        :param rowId:
+        :param message:
+        :type eventType: str
+        :param eventType:
+        :type officeName: str
+        """
         self.write(self.make_log_entry(officeName, eventType, rowId, message))
 
 

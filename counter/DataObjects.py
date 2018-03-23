@@ -25,6 +25,9 @@ class OfficeElection(object):
         self.fieldName = fieldName
         self.candidateNames = candidateNames
 
+    @property
+    def writeinFieldName(self):
+        return "%s-writein" % self.fieldName
 
 if __name__ == '__main__':
     pass

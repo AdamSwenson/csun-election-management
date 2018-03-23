@@ -4,10 +4,10 @@ Created by adam on 2/5/18
 __author__ = 'adam'
 import pandas as pd
 from pandas import DataFrame
-import counter.DataObjects as DO
+
 import counter.Exceptions as EX
-import counter.Helpers as HLP
 import counter.FileSystemTools as FST
+import counter.Helpers as HLP
 import counter.Loggers as LG
 
 
@@ -31,7 +31,9 @@ class VoteCounter(object):
         self.error_logger = LG.VoterErrorLogger()
 
         self.resultsDict = {'illegal-overselection': 0,
-                            'abstentions': 0}
+                            'abstentions': 0,
+                            'writeins-unverified': 0
+                            }
 
         self._process_kwargs(kwargs)
         self._initialize_results_dict()
@@ -60,11 +62,13 @@ class VoteCounter(object):
                 # update the tallys for the selected candidates
                 [self._increment_candidate_tally(name) for name in listOfSelectedNames]
 
+                self._process_writein(row, listOfSelectedNames)
+
             except EX.OverselectionError as error:
                 # Increment the overselection count
                 self.resultsDict['illegal-overselection'] += 1
                 # log
-                self.error_logger.log(self.office, error.type, row.rowId,  error.message)
+                self.error_logger.log(self.office, error.type, row.rowId, error.message)
 
             except EX.AbstentionError as error:
                 self.resultsDict['abstentions'] += 1
@@ -99,17 +103,6 @@ class VoteCounter(object):
         self._name_guard(candidateName)
         # increment the name
         self.resultsDict[candidateName] += 1
-
-    # def _parse_selected_candidates(self, row):
-    #     """ Separates the row into a list of candidates the voter has chosen
-    #     If addNames has been checked, it will add the name to the results dict
-    #     If not, it will raise an error
-    #     """
-    #     columnName = self.electionObject.fieldName
-    #     listOfSelectedNames = HLP.ResultFieldProcessor.process_field_values(row[columnName])
-    #     for name in listOfSelectedNames:
-    #         self._name_guard(name)
-    #     return listOfSelectedNames
 
     def _absention_guard(self, result):
         if pd.isna(result):
@@ -162,7 +155,61 @@ class VoteCounter(object):
             resultsFile = '%s/%s' % (outputFilePath, self.resultsFileName)
             # write results to file
             df.to_excel(resultsFile)
-            self.processing_event_logger.log('Results written to %s' % resultsFile)
+            self.processing_event_logger.log('\n ***** Results written to %s \n' % resultsFile)
+
+    def _process_writein(self, row, resultList: list):
+        """
+        Determines if the voter has written anything in the writein
+        area. If so, it prompts the user to manually examine the row
+        :type resultList: list
+        """
+        ignore = ['none', '0']
+        field = row[self.electionObject.writeinFieldName]
+
+        # if pandas thinks it is empty, we're done
+        if pd.isna(field): return True
+
+        # if it is not a string, we don't need to worry
+        if not isinstance(field, str): return True
+
+        field = field.strip().lower()
+
+        # See if it is something benign
+        for w in ignore:
+            if field[:len(w)] == field:
+                return True
+
+        # Ok. It's a thing, let's give
+        # the appropriate warning
+        # First we check whether this would put them in
+        # over the maximum
+        if len(resultList + [field]) > self.maxValid:
+            # it may consitute an overselection.
+            # if so, we need to alert
+            msg = """
+            The voter selected the maximum # of candidates and has written in:
+                 %s 
+            This may be an overselection. 
+            If so, 1 vote must be manually subtracted from each of:  
+                %s 
+            """ % (field, row[self.electionObject.fieldName])
+            status = "!!!! WRITE IN -- MUST REVIEW !!!! POSSIBLE DISQUALIFICATION"
+
+        else:
+            msg = """
+            The voter had room for one or more write in candidates. They may have written in: 
+                %s 
+            If so, you must maually record this vote. 
+            If they wrote in more than 1 name, it could be an overselection. 
+            If so, 1 vote must be manually subtracted from each of:  
+                %s 
+            """ % (field, row[self.electionObject.fieldName])
+            status = "!!!! WRITE IN -- MUST REVIEW !!!!"
+
+        self.error_logger.log(self.office, status, row.rowId, msg)
+
+        # increment the writein counter
+        self.resultsDict['writeins-unverified'] += 1
 
 
 if __name__ == '__main__':
