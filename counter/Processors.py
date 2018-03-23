@@ -135,13 +135,33 @@ class VoteCounter(object):
             # The error will handle logging to file
             raise EX.OverselectionError(self.maxValid, len(resultList))
 
+    def _compute_total_legal_votes(self):
+        """All votes which indicate a preference are legal"""
+        return sum(self.resultsDict.values()) - self.resultsDict['abstentions']
+
     def _handle_count_complete(self, outputFilePath):
         """Any tasks to be handled once the counting is done
         should go here. These should include writing results to file
         """
+        self.resultsDict['totalVotesCast'] = sum(self.resultsDict.values())
+        self.resultsDict['totalLegalVotes'] = self._compute_total_legal_votes()
+        df = DataFrame(self.resultsDict, index=['votes']).T
+        # add a percent of legal votes field
+        df['% legal votes'] = df.apply(lambda x: x / x.totalLegalVotes)
+        df.sort_values(by='votes', ascending=False, inplace=True)
+
+        if self.electionObject.maxValid == 1:
+            # remove a total of votes cast fields
+            # these are only required for officer positions
+            # since they must get more than 50% of the legal vote
+            # todo Refactor so that don't have to do in this dumb order
+            df.drop(['totalLegalVotes', 'totalVotesCast'], axis=0, inplace=True)
+            df.drop(['% legal votes'], axis=1, inplace=True)
+
         if outputFilePath:
             resultsFile = '%s/%s' % (outputFilePath, self.resultsFileName)
-            DataFrame(self.resultsDict, index=['totalVotes']).T.to_excel(resultsFile)
+            # write results to file
+            df.to_excel(resultsFile)
             self.processing_event_logger.log('Results written to %s' % resultsFile)
 
 
