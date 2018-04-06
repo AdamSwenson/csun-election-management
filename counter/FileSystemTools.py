@@ -52,13 +52,13 @@ def getTimestampForMakingFileName():
     return datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 
 
-def load_results_into_frame(resultsFolderPath):
+def load_results_into_frame(resultsFilePath):
     """Given a folder location, this reads the first file from csv into a
     pandas dataframe
     """
     logger = Loggers.ProcessingEventLogger()
-    fileList = makeDataFileList(resultsFolderPath)
-    return pd.read_csv(fileList[0])
+    # fileList = makeDataFileList(resultsFilePath)
+    return pd.read_csv(resultsFilePath)
     # frames = []
     # for f in fileList:
     #     dt = pd.read_csv(f)
@@ -78,9 +78,35 @@ def make_election_obj_from_file(fileName):
         'office': d['Office'][0],
         'canvas': d['Canvas column name'][0],
         'max': d['Maximum selections allowed'][0],
-        'candidates': d['Candidate names'].tolist()
     }
+
+    try:
+        o['candidates'] = d['Candidate names'].tolist()
+    except:
+        o['candidates'] = []
+
     return DataObjects.OfficeElection(o['office'], o['canvas'], o['candidates'], o['max'])
+
+
+def make_election_objects_from_file(fileName):
+    """Reads an excel file definining several elections
+     and returns a list of OfficeElection object"""
+    d = pd.read_excel(fileName)
+    objects = []
+    for idx, row in d.iterrows():
+        o = {
+            'office': row['Office'],
+            'canvas': row['Canvas column name'],
+            'max': row['Maximum selections allowed'],
+        }
+
+        try:
+            o['candidates'] = d['Candidate names'].tolist()
+        except:
+            o['candidates'] = []
+
+        objects.append( DataObjects.OfficeElection(o['office'], o['canvas'], o['candidates'], o['max']))
+    return objects
 
 
 def makeDataFileList(folderPath, exclude=[]):

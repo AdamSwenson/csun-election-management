@@ -64,6 +64,14 @@ class VoteCounter(object):
 
                 self._process_writein(row, listOfSelectedNames)
 
+            except KeyError:
+                # This allows us to load election definition
+                # objects with no corresponding results data.
+                # That allows consolidation of the election definitions
+                # into one file.
+                # self.error_logger.log(self.office, 'missing results', 0, 'no results present for this office' )
+                pass
+
             except EX.OverselectionError as error:
                 # Increment the overselection count
                 self.resultsDict['illegal-overselection'] += 1
