@@ -3,8 +3,7 @@ Created by adam on 3/12/19
 """
 __author__ = 'adam'
 
-if __name__ == '__main__':
-    pass
+import pandas as pd
 
 
 def get_results_column_names( frame ):
@@ -47,3 +46,22 @@ def get_write_in_column_names( frame, question_number ):
 def is_placeholder( candidate ):
     return candidate.strip().lower()[ :5 ] == 'write'
     # return candidate.strip().lower()[ :20 ] == 'write-in candidate #'
+
+
+def load_and_prepare( results_file ):
+    data = pd.read_csv( results_file )
+    # Remove non-response rows
+    dropped = data[ data.index <= 1 ]
+    data = data[ data.index > 1 ]
+    # remove unneeded columns
+    drop_columns = [ 'DistributionChannel', 'UserLanguage', 'Status' ]
+    data.drop( drop_columns, axis=1, inplace=True )
+    data.dropna( how='all', axis=0, inplace=True )
+    # format timestamps
+    date_fields = [ 'StartDate', 'EndDate', 'RecordedDate' ]
+
+    def make_ts( row ):
+        return pd.to_datetime( row[ date_fields ] )
+
+    data[ date_fields ] = data.apply( lambda x: make_ts( x ), axis=1 )
+    return data

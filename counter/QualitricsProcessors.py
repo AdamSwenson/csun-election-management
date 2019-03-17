@@ -35,7 +35,6 @@ def process_field( field, keep_depts=False ):
         print(e)
 
 
-
 def process_voter( rowId: int, row, main_column: str, write_in_columns: list ):
     """Process all the fields for an individual voter
     :param rowId:
