@@ -40,7 +40,7 @@ class VoteCounter(object):
 
     def count(self, frame, outputFilePath=None):
         """
-        Runs the actual counting of the votes
+        Runs the actual counting of the valid_votes
         :param frame:
         :param outputFilePath:
         :return:
@@ -138,7 +138,7 @@ class VoteCounter(object):
 
     def _compute_vote_totals(self):
         """Adds vote totals to the results dictionary
-        All votes which indicate a preference are legal"""
+        All valid_votes which indicate a preference are legal"""
         self.resultsDict['totalVotesCast'] = sum(self.resultsDict.values()) - self.resultsDict['writeins-unverified']
         self.resultsDict['totalLegalVotes'] = self.resultsDict['totalVotesCast'] - self.resultsDict['abstentions']
 
@@ -148,21 +148,21 @@ class VoteCounter(object):
         should go here. These should include writing results to file
         """
         if self.electionObject.maxValid == 1:
-            # add total of votes cast fields
+            # add total of valid_votes cast fields
             # these are only required for officer positions
             # since they must get more than 50% of the legal vote
             self._compute_vote_totals()
 
-        df = DataFrame(self.resultsDict, index=['votes']).T
-        df.sort_values(by='votes', ascending=False, inplace=True)
+        df = DataFrame(self.resultsDict, index=['valid_votes']).T
+        df.sort_values(by='valid_votes', ascending=False, inplace=True)
 
         if self.electionObject.maxValid == 1:
-            # add a percent of legal votes field
+            # add a percent of legal valid_votes field
             # again only required for single person elections
-            df['% legal votes'] = df.apply(lambda x: x / x.totalLegalVotes)
+            df['% legal valid_votes'] = df.apply(lambda x: x / x.totalLegalVotes)
             # # todo Refactor so that don't have to do in this dumb order
             # df.drop(['totalLegalVotes', 'totalVotesCast'], axis=0, inplace=True)
-            # df.drop(['% legal votes'], axis=1, inplace=True)
+            # df.drop(['% legal valid_votes'], axis=1, inplace=True)
 
         if outputFilePath:
             resultsFile = '%s/%s' % (outputFilePath, self.resultsFileName)

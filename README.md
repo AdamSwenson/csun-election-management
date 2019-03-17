@@ -5,7 +5,7 @@ Download this entire folder and place it somewhere convenient.
 The csun-election-management folder contains both the program files
 and empty folders just waiting for fresh files from the election.
 
-# Tabulating votes
+# Tabulating valid_votes
 0 Delete any pre-exising election definition and input files. You may leave preexisting logs and results files, if you like.
 
 1 Create an election definition file for each office that needs to be tabulated.
@@ -74,4 +74,4 @@ with row id numbers inserted. This will be helpful for auditing because
 the row id numbers will be used to identify rows in the other log file.
 
 The second is a text file. This is the log of everything which happened during
-processing the votes.
+processing the valid_votes.

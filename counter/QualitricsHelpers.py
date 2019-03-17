@@ -45,4 +45,5 @@ def get_write_in_column_names( frame, question_number ):
 
 
 def is_placeholder( candidate ):
-    return candidate.strip()[ :10 ] == 'WRITE IN #'
+    return candidate.strip().lower()[ :5 ] == 'write'
+    # return candidate.strip().lower()[ :20 ] == 'write-in candidate #'

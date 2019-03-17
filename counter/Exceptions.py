@@ -17,7 +17,7 @@ class Errors( Exception ):
 class InvalidatesVote( Exception ):
     """If this class inherits from this, its
     presence should subtract 1 vote from the
-    total number of valid votes
+    total number of valid valid_votes
     """
     def __init__( self ):
         super().__init__()

@@ -12,6 +12,8 @@ def find_dept( field ):
     input "Idris Elba (Age 46),Dwayne Johnson (Age 48)"
     output '(Age 46)'
     """
+    if type(field) == float:
+        return field
     return field[ field.find( "(" ): field.find( ")" ) + 1 ]
 
 
@@ -27,6 +29,8 @@ def remove_depts( field ):
     input "Idris Elba (Age 46),Dwayne Johnson (Age 48)"
     output 'Idris Elba ,Dwayne Johnson (Age 48)'
     """
+    if type(field) != str:
+        return field
     try:
         while True:
             dept_string = find_dept( field )
@@ -36,6 +40,8 @@ def remove_depts( field ):
             field = ''.join( field.split( dept_string ) )
     except StopIteration:
         return field
+    # except AttributeError:
+    #     return field
 
 
 if __name__ == '__main__':

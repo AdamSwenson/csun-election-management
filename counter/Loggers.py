@@ -7,7 +7,7 @@ Created by adam on 2/5/18
 __author__ = 'adam'
 import datetime
 import os
-from counter import environment as env
+# from counter import environment as env
 
 # from logbook import Logger
 # from click_to_tabulate_votes import LOG_FOLDER_PATH
@@ -42,9 +42,9 @@ class LogWriter(object):
 
 
 class WriteInVoteLogger(LogWriter):
-    def __init__(self):
+    def __init__(self, log_folder):
         super().__init__()
-        self.logfile = "%s/write-in-log.txt" % env.LOG_FOLDER_PATH
+        self.logfile = "%s/write-in-log.txt" % log_folder
 
     def make_log_entry(self, officeName, rowId, list_of_candidates):
         """Creates text to be written in a standardized format"""

@@ -3,14 +3,32 @@ Created by adam on 2/5/18
 """
 __author__ = 'adam'
 
+import sys, os
 import datetime
+
+
+# The folder containing environment.py
+PROJ_PATH = os.path.abspath(os.path.dirname(__file__))
+# Folders outside of the project foler
+enclosing = os.path.abspath(os.path.dirname(PROJ_PATH))
+sys.path.append(PROJ_PATH)
+sys.path.append(enclosing)
 from counter.FileSystemTools import getSystemRoot, getTimestampForMakingFileName
-from counter import Loggers as LG
+import Loggers as LG
+
 
 try:
     assert(len(BASE) > 0)
 except NameError:
     BASE = getSystemRoot()
+
+# The folder containing environment.py
+PROJ_PATH = os.path.abspath(os.path.dirname(__file__))
+# Folders outside of the project foler
+enclosing = os.path.abspath(os.path.dirname(PROJ_PATH))
+sys.path.append(PROJ_PATH)
+sys.path.append(enclosing)
+
 
 # Contains all data files and folders
 DATA_FOLDER_PATH = "%s/Desktop/Election" % BASE
@@ -32,12 +50,14 @@ OUTPUT_FILE = "%s/Returns.xlsx" % OUTPUT_FOLDER_PATH
 # Where to find the files defining the elections to be tabulated
 ELECTION_DEF_FILES_PATH = "%s/definitions" % INPUT_FOLDER_PATH
 
+# Other specific files that will use
+ELIGIBILITY_FILE_PATH = "%s/historical/Eligible voters.xlsx" % INPUT_FOLDER_PATH
+PAST_RETURNS_FILE_PATH = "%s/historical/Election returns.xlsx" % INPUT_FOLDER_PATH
 
 # Loggers
 # This will handle recording ordinary (non-error) events during processing
 eventLogger = LG.ProcessingEventLogger()
-
-writeInLogger = LG.WriteInVoteLogger()
+writeInLogger = LG.WriteInVoteLogger(LOG_FOLDER_PATH)
 
 
 

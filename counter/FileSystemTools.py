@@ -7,11 +7,12 @@ __author__ = 'adam'
 import os
 import datetime
 
-import counter.Loggers
+# import counter.Loggers
 # from Loggers import *
 
+# from counter import environment as env
 # from counter import Loggers
-from counter import DataObjects, Loggers
+# from counter import DataObjects, Loggers
 
 import pandas as pd
 
@@ -71,21 +72,21 @@ def make_results_file_path(outputFilePath, officeName):
     return '%s/%s %s %s' % (outputFilePath, getTimestampForMakingFileName(), officeName, RESULTS_NAME_BASE)
 
 
-def make_election_obj_from_file(fileName):
-    """Reads an excel file definining an election and returns an OfficeElection object"""
-    d = pd.read_excel(fileName)
-    o = {
-        'office': d['Office'][0],
-        'canvas': d['Canvas column name'][0],
-        'max': d['Maximum selections allowed'][0],
-    }
-
-    try:
-        o['candidates'] = d['Candidate names'].tolist()
-    except:
-        o['candidates'] = []
-
-    return DataObjects.OfficeElection(o['office'], o['canvas'], o['candidates'], o['max'])
+# def make_election_obj_from_file(fileName):
+#     """Reads an excel file definining an election and returns an OfficeElection object"""
+#     d = pd.read_excel(fileName)
+#     o = {
+#         'office': d['Office'][0],
+#         'canvas': d['Canvas column name'][0],
+#         'max': d['Maximum selections allowed'][0],
+#     }
+#
+#     try:
+#         o['candidates'] = d['Candidate names'].tolist()
+#     except:
+#         o['candidates'] = []
+#
+#     return DataObjects.OfficeElection(o['office'], o['canvas'], o['candidates'], o['max'])
 
 
 def make_election_objects_from_file(fileName):

@@ -5,6 +5,7 @@ from pandas import DataFrame
 
 import counter.DataObjects as DO
 import counter.Processors as P
+from DummyDataTools import make_candidate
 
 fake = Faker()
 
@@ -14,11 +15,6 @@ NUMBER_INVALID = 0
 
 FIELD_NAME = fake.bs()
 OFFICE_NAME = fake.bs()
-
-
-def make_candidate():
-    dept = "%s %s %s" % (fake.word(), fake.word(), fake.word())
-    return "%s %s (%s)" % (fake.first_name(), fake.last_name(), dept)
 
 
 def make_initialized_results(candidates):
@@ -42,7 +38,7 @@ def make_vote_string(candidates):
 class VoteCounter(unittest.TestCase):
     def setUp(self):
         self.maxValid = NUMBER_CANDIDATES
-        self.candidates = [make_candidate() for i in range(0, NUMBER_CANDIDATES)]
+        self.candidates = [ make_candidate() for i in range( 0, NUMBER_CANDIDATES ) ]
         self.election = DO.OfficeElection(OFFICE_NAME, FIELD_NAME, self.candidates, self.maxValid)
 
     def test_initializes_properly(self):
@@ -67,7 +63,7 @@ class VoteCounter(unittest.TestCase):
     def test_one_candidate_gets_every_vote(self):
         """
         0 abstentions; 0 errors
-        Each voter votes for the same candidate
+        Each voter valid_votes for the same candidate
         """
         # prep
         luckyWinner = self.candidates[0]
@@ -92,7 +88,7 @@ class VoteCounter(unittest.TestCase):
     def test_each_candidate_gets_one_vote(self):
         """
         0 abstentions; 0 errors
-        Each voter votes for one of the candidates; no two
+        Each voter valid_votes for one of the candidates; no two
         voters vote for the same candidate
         Thus each candidate's vote total is 1
         :return:
@@ -116,7 +112,7 @@ class VoteCounter(unittest.TestCase):
     def test_all_vote_for_all_candidates(self):
         """
         0 abstentions; 0 errors
-        Each voter votes for all of the candidates
+        Each voter valid_votes for all of the candidates
         Thus each candidate's vote total is # voters
         """
         f = []
@@ -138,7 +134,7 @@ class VoteCounter(unittest.TestCase):
     def test_candidate_wins_by_one_vote(self):
         """
         0 abstentions; 0 errors
-        One voter only votes for one candidate; every
+        One voter only valid_votes for one candidate; every
         other voter vote for every candidate
         Thus the winner's total is 1 more than each of her competitors
         """
@@ -148,7 +144,7 @@ class VoteCounter(unittest.TestCase):
         for i in range(0, NUMBER_VOTERS):
             record = {'rowId': i}
             if i == 0:
-                # The first voter only votes for the winner
+                # The first voter only valid_votes for the winner
                 record[FIELD_NAME] = make_vote_string(luckyWinner)
             else:
                 record[FIELD_NAME] = make_vote_string(self.candidates)
@@ -170,7 +166,7 @@ class VoteCounter(unittest.TestCase):
     def test_overselection_all_vote_for_too_many_candidates(self):
         """
         0 abstentions; 0 errors
-        Each voter votes for all of the candidates
+        Each voter valid_votes for all of the candidates
         Thus each candidate's vote total is # voters
         """
         f = []
