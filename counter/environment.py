@@ -35,6 +35,8 @@ DATA_FOLDER_PATH = "%s/Desktop/Election" % BASE
 
 # Where the processor should look to find the files to proces
 INPUT_FOLDER_PATH = "%s/input" % DATA_FOLDER_PATH
+RESULTS_FOLDER_PATH = "%s/results" % INPUT_FOLDER_PATH
+DEFINITIONS_FOLDER_PATH = "%s/definitions" % INPUT_FOLDER_PATH
 
 # Where the files containing results and summary information are
 # stored.

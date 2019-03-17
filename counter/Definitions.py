@@ -10,7 +10,8 @@ from counter.FileSystemTools import makeDataFileList
 
 class OfficeDefinitions( object ):
 
-    def __init__( self, definitions_folder=env.ELECTION_DEF_FILES_PATH, election=None ):
+    def __init__( self,  definition_filepath, election ):
+        self.election = election
         self.def_map = {
             'office': [ 'Office', 'office' ],
             'field': [ 'Canvas column name', 'Results column name' ],
@@ -18,20 +19,21 @@ class OfficeDefinitions( object ):
             'requires_maj': [ 'Requires majority' ]
         }
 
-        self._load( definitions_folder )
+        self._load( definition_filepath )
 
-    def _load( self, definitions_folder ):
-        files = [ f for f in makeDataFileList( definitions_folder ) if f[ -4: ] == 'xlsx' or f[ -3: ] == 'xls' ]
-
-        # if election:
-
-        # frames = []
-        # for f in files:
-        #     frames.append(pd.read_excel( f ))
-        # self.defs = pd.merge(frames)
+    def _load( self, definitions_filepath ):
+        # print(definitions_filepath)
+        # files = [ f for f in makeDataFileList( definitions_folder ) if f[ -4: ] == 'xlsx' or f[ -3: ] == 'xls' ]
+        #
+        # if election == 'general':
+        #
+        # # frames = []
+        # # for f in files:
+        # #     frames.append(pd.read_excel( f ))
+        # # self.defs = pd.merge(frames)
 
         # Standardize column names
-        self.defs = pd.read_excel( files[ 0 ] )
+        self.defs = pd.read_excel( definitions_filepath )
         for k in self.def_map.keys():
             for c in self.def_map[ k ]:
                 if c in self.defs.columns:

@@ -96,13 +96,13 @@ def process_office_columns( results: OfficeElection):
     return results.vote_counts
 
 
-def process_results(frame):
+def process_results(frame, definition_filepath, election):
     """This is the master processing function
     Returns a list of results objects for each office where no errors
     were encountered.
     """
     # Read in the properties of the various offices
-    Definitions = OfficeDefinitions()
+    Definitions = OfficeDefinitions(definition_filepath, election)
     results = []
 
     results_columns = get_results_column_names(frame)
